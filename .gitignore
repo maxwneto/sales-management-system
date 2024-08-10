@@ -155,7 +155,12 @@ dmypy.json
 cython_debug/
 
 # Project Folders
+# Ignora todos os arquivos na pasta db_file
 db_file/*
+
+# Exceção para o arquivo .gitkeep
+!db_file/.gitkeep
+
 
 # PyCharm
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
