@@ -1,4 +1,3 @@
-# category_controller.py
 from dal.data_manager import DataManager
 from models.category import Category
 
@@ -21,3 +20,21 @@ class CategoryController:
 
     def list_categories(self):
         return self.categories
+
+    def update_category(self, old_name, new_name):
+        category = self.get_category_by_name(old_name)
+        if category:
+            category['name'] = new_name
+            self.data_manager.save_data(self.categories)
+            print(f"Category '{old_name}' updated to '{new_name}' successfully.")
+        else:
+            print(f"Category '{old_name}' not found.")
+
+    def delete_category(self, name):
+        category = self.get_category_by_name(name)
+        if category:
+            self.categories.remove(category)
+            self.data_manager.save_data(self.categories)
+            print(f"Category '{name}' deleted successfully.")
+        else:
+            print(f"Category '{name}' not found.")

@@ -26,3 +26,30 @@ class SupplierController:
             return []
         
         return self.suppliers
+
+    def get_supplier_by_id(self, supplier_id):
+        for supplier in self.suppliers:
+            if str(supplier.get('id')) == str(supplier_id):
+                return supplier
+        return None
+
+    def update_supplier(self, supplier_id, name=None, contact_info=None):
+        supplier = self.get_supplier_by_id(supplier_id)
+        if supplier:
+            if name:
+                supplier['name'] = name
+            if contact_info:
+                supplier['contact_info'] = contact_info
+            self.data_manager.save_data(self.suppliers)
+            print(f"Supplier ID {supplier_id} updated successfully.")
+        else:
+            print(f"Supplier ID {supplier_id} not found.")
+
+    def delete_supplier(self, supplier_id):
+        supplier = self.get_supplier_by_id(supplier_id)
+        if supplier:
+            self.suppliers.remove(supplier)
+            self.data_manager.save_data(self.suppliers)
+            print(f"Supplier ID {supplier_id} deleted successfully.")
+        else:
+            print(f"Supplier ID {supplier_id} not found.")
