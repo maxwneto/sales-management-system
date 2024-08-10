@@ -1,6 +1,8 @@
+# models/product.py
 class Product:
-    def __init__(self, name, price, category, product_id):
+    def __init__(self, name, price, category, product_id, quantity):
         self.name = name
         self.price = price
         self.category = category
-        self.id = product_id  # Adicionando um identificador único
+        self.id = product_id
+        self.quantity = quantity
