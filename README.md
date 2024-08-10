@@ -2,16 +2,17 @@
 
 ## Overview
 
-This is a simple Sales Management System developed in Python using the MVC (Model-View-Controller) architecture. The system allows you to manage clients, employees, suppliers, categories, products, and sales through a command-line interface (CLI).
+This Sales Management System is a simple yet comprehensive application developed in Python using the MVC (Model-View-Controller) architecture. The system is designed to manage clients, employees, suppliers, categories, products, and sales through a command-line interface (CLI). It supports full CRUD operations across all entities, including the management of stock levels and sales reports.
 
 ## Features
 
-- **Manage Clients**: Add, list, and manage clients.
-- **Manage Employees**: Add, list, and manage employees.
-- **Manage Suppliers**: Add, list, and manage suppliers.
-- **Manage Categories**: Add, list, and manage product categories.
-- **Manage Products**: Add, list, and manage products, including associating them with categories.
+- **Manage Clients**: Add, list, edit, delete, and manage clients.
+- **Manage Employees**: Add, list, edit, delete, and manage employees.
+- **Manage Suppliers**: Add, list, edit, delete, and manage suppliers.
+- **Manage Categories**: Add, list, edit, delete, and manage product categories.
+- **Manage Products**: Add, list, edit, delete, and manage products, including associating them with categories and managing stock levels.
 - **Manage Sales**: Register sales, list sales reports, filter sales by date, and view top-selling products and top clients.
+- **Cash Register Management**: Track total sales volume, supporting future functionalities like handling returns and managing cash flow.
 
 ## Installation
 
@@ -41,19 +42,20 @@ You will be presented with a main menu where you can choose to manage clients, e
 
 ### Main Menu
 
-1. **Manage Clients**: Allows you to add new clients and view the list of existing clients.
-2. **Manage Employees**: Allows you to add new employees and view the list of existing employees.
-3. **Manage Suppliers**: Allows you to add new suppliers and view the list of existing suppliers.
-4. **Manage Categories**: Allows you to add new product categories and view the list of existing categories.
-5. **Manage Products**: Allows you to add new products, associating them with a category, and view the list of existing products.
-6. **Manage Sales**: Allows you to register sales, view sales reports, filter sales by date, and view top-selling products and clients.
+1. **Manage Clients**: Allows you to add, list, edit, and delete clients.
+2. **Manage Employees**: Allows you to add, list, edit, and delete employees.
+3. **Manage Suppliers**: Allows you to add, list, edit, and delete suppliers.
+4. **Manage Categories**: Allows you to add, list, edit, and delete product categories.
+5. **Manage Products**: Allows you to add, list, edit, and delete products, associating them with a category and managing stock levels.
+6. **Manage Sales**: Allows you to register sales, view sales reports, filter sales by date, view top-selling products, and identify top clients.
 7. **Exit**: Closes the application.
 
 ### Example Workflow
 
 1. **Add a Category**: Before adding a product, ensure you have categories set up. You can add a category through the "Manage Categories" option.
-2. **Add a Product**: Add a product by selecting a category from the available list, then provide the product name and price.
-3. **Register a Sale**: Once products are added, you can register a sale by selecting a client and the products purchased.
+2. **Add a Product**: Add a product by selecting a category from the available list, then provide the product name, price, and initial stock quantity.
+3. **Register a Sale**: Once products are added, you can register a sale by selecting a client and the products purchased, with automatic stock management.
+4. **View Sales Reports**: After registering sales, you can view comprehensive sales reports, filter by date, and analyze top-performing products and clients.
 
 ## Project Structure
 
@@ -92,6 +94,15 @@ sales_management_system/
 │   ├── category_view.py
 │   └── __init__.py
 │
+├── db_file/                  # Directory for storing JSON data files
+│   ├── clients.json
+│   ├── employees.json
+│   ├── suppliers.json
+│   ├── products.json
+│   ├── sales.json
+│   ├── categories.json
+│   └── cash_register.json
+│
 └── main.py
 ```
 
@@ -102,3 +113,10 @@ Feel free to fork this repository and contribute by submitting pull requests. Pl
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+```
+
+### Key Updates:
+
+1. **Expanded Features**: Added details about the full CRUD operations available for all entities, as well as the Cash Register management.
+2. **Example Workflow**: Provided a clearer workflow example that incorporates all key functionalities, including stock management during sales.
+3. **Project Structure**: Updated the structure to reflect the dedicated `db_file/` directory for JSON data files.
