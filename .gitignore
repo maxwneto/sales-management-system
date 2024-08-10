@@ -155,10 +155,11 @@ dmypy.json
 cython_debug/
 
 # Project Folders
-# Ignora todos os arquivos na pasta db_file
+# Ignora todos os arquivos dentro da pasta db_file
 db_file/*
 
-# Exceção para o arquivo .gitkeep
+# Exceção para garantir que a pasta db_file seja incluída no repositório
+!db_file/
 !db_file/.gitkeep
 
 
