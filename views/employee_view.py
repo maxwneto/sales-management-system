@@ -13,8 +13,17 @@ class EmployeeView:
 
     def list_employees(self):
         employees = self.employee_controller.list_employees()
+        if not employees:
+            print("No employees available.")
+            return
+        
+        print("\nList of Employees")
+        print("----------------------------------------------------------------------------------------------------")
+        print(f"{'ID':<10} {'Name':<20} {'Email':<30} {'Phone':<15}")
+        print("----------------------------------------------------------------------------------------------------")
         for employee in employees:
-            print(f"ID: {employee['employee_id']}, Name: {employee['name']}, Email: {employee['email']}, Phone: {employee['phone']}")
+            print(f"{employee['employee_id']:<10} {employee['name']:<20} {employee['email']:<30} {employee['phone']:<15}")
+        print("----------------------------------------------------------------------------------------------------")
 
     def menu(self):
         while True:

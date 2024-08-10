@@ -8,12 +8,21 @@ class SupplierView:
         name = input("Enter supplier name: ")
         contact_info = input("Enter supplier contact info: ")
         self.supplier_controller.add_supplier(name, contact_info)
-        print("Supplier added successfully.")
+        print(f"Supplier '{name}' added successfully.")
 
     def list_suppliers(self):
         suppliers = self.supplier_controller.list_suppliers()
+        if not suppliers:
+            print("No suppliers available.")
+            return
+        
+        print("\nList of Suppliers")
+        print("----------------------------------------------------------------------------------------------------")
+        print(f"{'ID':<10} {'Name':<20} {'Contact Info':<30}")
+        print("----------------------------------------------------------------------------------------------------")
         for supplier in suppliers:
-            print(supplier)
+            print(f"{supplier['id']:<10} {supplier['name']:<20} {supplier['contact_info']:<30}")
+        print("----------------------------------------------------------------------------------------------------")
 
     def menu(self):
         while True:
