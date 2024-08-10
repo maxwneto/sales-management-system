@@ -1,4 +1,3 @@
-# category_view.py
 from controllers.category_controller import CategoryController
 
 class CategoryView:
@@ -19,9 +18,13 @@ class CategoryView:
         if not categories:
             print("No categories available.")
         else:
-            print("Available categories:")
+            print("\nAvailable Categories")
+            print("----------------------------------------------------------------------------------------------------")
+            print(f"{'Category Name':<30}")
+            print("----------------------------------------------------------------------------------------------------")
             for category in categories:
-                print(f"Name: {category['name']}")
+                print(f"{category['name']:<30}")
+            print("----------------------------------------------------------------------------------------------------")
 
     def menu(self):
         while True:

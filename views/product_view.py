@@ -1,4 +1,3 @@
-# product_view.py
 from controllers.product_controller import ProductController
 from controllers.category_controller import CategoryController
 
@@ -13,10 +12,13 @@ class ProductView:
             print("No products available.")
         else:
             print("\nProduct List")
+            print("----------------------------------------------------------------------------------------------------")
+            print(f"{'Product ID':<15} {'Name':<20} {'Category':<20} {'Quantity':<15} {'Price':<10}")
+            print("----------------------------------------------------------------------------------------------------")
             for product in products:
-                print(f"Product ID: {product['id']}, Name: {product['name']}, Category: {product['category']['name']}, "
-                      f"Quantity in Stock: {product['quantity']}, Price: {product['price']}")
-                print("----------------------------------------------------------------------------------------------------")
+                print(f"{product['id']:<15} {product['name']:<20} {product['category']['name']:<20} "
+                      f"{product['quantity']:<15} {product['price']:<10}")
+            print("----------------------------------------------------------------------------------------------------")
 
     def add_product(self):
         print("Available categories:")

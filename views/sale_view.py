@@ -70,12 +70,9 @@ class SaleView:
                 print(f"Not enough stock for {product['name']}.")
                 continue
 
-            # Reduz a quantidade no estoque e atualiza o banco de dados
-            product['quantity'] -= quantity
-            self.product_controller.update_product(product)
-
-            # Adiciona apenas a quantidade informada ao relatório de vendas
+            # Adiciona o produto e a quantidade à lista de produtos selecionados
             products.append({
+                'id': product['id'],
                 'name': product['name'],
                 'price': product['price'],
                 'quantity': quantity
@@ -86,8 +83,16 @@ class SaleView:
             return
 
         date = input("Enter sale date (YYYY-MM-DD): ")
+
+        # Agora que a venda foi confirmada, reduz o estoque
+        for item in products:
+            product = self.product_controller.get_product_by_id(item['id'])
+            product['quantity'] -= item['quantity']
+            self.product_controller.update_product(product)
+
         self.sale_controller.add_sale(client, products, date)
         print("Sale added successfully.")
+
 
     def top_selling_products(self):
         sales = self.sale_controller.sales_report()
@@ -161,6 +166,13 @@ class SaleView:
             print(f"{client:<20} {total_spent:<15.2f}")
         print("----------------------------------------------------------------------------------------------------")
 
+    def cash_report(self):
+        total_cash = self.sale_controller.get_cash_total()
+        print("\nCash Register Report")
+        print("----------------------------------------------------------------------------------------------------")
+        print(f"Total in Cash Register: ${total_cash:.2f}")
+        print("----------------------------------------------------------------------------------------------------")
+
     def menu(self):
         while True:
             print("\nSales Management")
@@ -169,7 +181,8 @@ class SaleView:
             print("3. Sales by Date")
             print("4. Top Selling Products")
             print("5. Top Clients")
-            print("6. Exit")
+            print("6. Cash Report")
+            print("7. Exit")
             choice = input("Choose an option: ")
             if choice == '1':
                 self.add_sale()
@@ -182,6 +195,8 @@ class SaleView:
             elif choice == '5':
                 self.top_clients()
             elif choice == '6':
+                self.cash_report()
+            elif choice == '7':
                 break
             else:
                 print("Invalid option.")
