@@ -1,3 +1,4 @@
+import re
 from collections import Counter
 from controllers.sale_controller import SaleController
 from controllers.product_controller import ProductController
@@ -70,7 +71,6 @@ class SaleView:
                 print(f"Not enough stock for {product['name']}.")
                 continue
 
-            # Adiciona o produto e a quantidade à lista de produtos selecionados
             products.append({
                 'id': product['id'],
                 'name': product['name'],
@@ -82,7 +82,13 @@ class SaleView:
             print("No products selected. Sale aborted.")
             return
 
-        date = input("Enter sale date (YYYY-MM-DD): ")
+        # Loop para garantir que a data esteja no formato correto
+        while True:
+            date = input("Enter sale date (YYYY-MM-DD): ")
+            if re.match(r'^\d{4}-\d{2}-\d{2}$', date):
+                break
+            else:
+                print("Invalid date format. Please enter the date in YYYY-MM-DD format.")
 
         # Agora que a venda foi confirmada, reduz o estoque
         for item in products:
@@ -92,7 +98,6 @@ class SaleView:
 
         self.sale_controller.add_sale(client, products, date)
         print("Sale added successfully.")
-
 
     def top_selling_products(self):
         sales = self.sale_controller.sales_report()
@@ -120,7 +125,15 @@ class SaleView:
         print("----------------------------------------------------------------------------------------------------")
 
     def sales_by_date(self):
-        date = input("Enter the date to filter sales (YYYY-MM-DD): ")
+        while True:
+            date = input("Enter the date to filter sales (YYYY-MM-DD): ")
+
+            # Verificação da consistência do formato da data
+            if re.match(r'^\d{4}-\d{2}-\d{2}$', date):
+                break  # Sai do loop se o formato estiver correto
+            else:
+                print("Invalid date format. Please enter the date in YYYY-MM-DD format.")
+
         sales = self.sale_controller.sales_report()
         filtered_sales = [sale for sale in sales if sale.get('date') == date]
 
