@@ -1,1 +1,14 @@
-[]
+[
+    {
+        "name": "Eletronics"
+    },
+    {
+        "name": "Books"
+    },
+    {
+        "name": "Foods"
+    },
+    {
+        "name": "House Utilities"
+    }
+]

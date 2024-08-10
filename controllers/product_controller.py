@@ -1,3 +1,4 @@
+# product_controller.py
 from dal.data_manager import DataManager
 from models.product import Product
 
@@ -6,10 +7,9 @@ class ProductController:
         self.data_manager = DataManager('products.json')
         self.products = self.data_manager.load_data()
 
-    def add_product(self, name, price, category):
-        # Gerando um ID único baseado no número de produtos existentes
+    def add_product(self, name, price, category, quantity):
         product_id = len(self.products) + 1
-        product = Product(name, price, category, product_id)
+        product = Product(name, price, category, product_id, quantity)
         self.products.append(product.__dict__)
         self.data_manager.save_data(self.products)
 
@@ -21,3 +21,11 @@ class ProductController:
             if product.get('id') == product_id:
                 return product
         return None
+
+    def update_product(self, updated_product):
+        for i, product in enumerate(self.products):
+            if product['id'] == updated_product['id']:  # Certifique-se de que essa linha está completa
+                self.products[i] = updated_product  # Atualiza o produto na lista
+                self.data_manager.save_data(self.products)
+                return True
+        return False

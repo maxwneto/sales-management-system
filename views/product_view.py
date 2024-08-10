@@ -1,3 +1,4 @@
+# product_view.py
 from controllers.product_controller import ProductController
 from controllers.category_controller import CategoryController
 
@@ -6,8 +7,18 @@ class ProductView:
         self.product_controller = ProductController()
         self.category_controller = CategoryController()
 
+    def list_products(self):
+        products = self.product_controller.list_products()
+        if not products:
+            print("No products available.")
+        else:
+            print("\nProduct List")
+            for product in products:
+                print(f"Product ID: {product['id']}, Name: {product['name']}, Category: {product['category']['name']}, "
+                      f"Quantity in Stock: {product['quantity']}, Price: {product['price']}")
+                print("----------------------------------------------------------------------------------------------------")
+
     def add_product(self):
-        # Listar categorias disponíveis
         print("Available categories:")
         categories = self.category_controller.list_categories()
         if not categories:
@@ -30,14 +41,10 @@ class ProductView:
 
         name = input("Enter product name: ")
         price = float(input("Enter product price: "))
+        quantity = int(input("Enter product quantity: "))  # Quantidade de produtos
 
-        self.product_controller.add_product(name, price, category)
+        self.product_controller.add_product(name, price, category, quantity)
         print("Product added successfully.")
-
-    def list_products(self):
-        products = self.product_controller.list_products()
-        for product in products:
-            print(f"ID: {product['id']}, Name: {product['name']}, Price: {product['price']}, Category: {product['category']['name']}")
 
     def menu(self):
         while True:

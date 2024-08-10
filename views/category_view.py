@@ -1,3 +1,4 @@
+# category_view.py
 from controllers.category_controller import CategoryController
 
 class CategoryView:
@@ -6,11 +7,11 @@ class CategoryView:
 
     def add_category(self):
         name = input("Enter category name: ").strip()
-        existing_category = self.category_controller.get_or_create_category(name)
+        existing_category = self.category_controller.get_category_by_name(name)
         if existing_category:
             print(f"Category '{name}' already exists.")
         else:
-            self.category_controller.get_or_create_category(name)
+            self.category_controller.create_category(name)
             print(f"Category '{name}' added successfully.")
 
     def list_categories(self):

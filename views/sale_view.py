@@ -1,12 +1,34 @@
+from collections import Counter
 from controllers.sale_controller import SaleController
-from controllers.client_controller import ClientController
 from controllers.product_controller import ProductController
+from controllers.client_controller import ClientController
 
 class SaleView:
     def __init__(self):
         self.sale_controller = SaleController()
-        self.client_controller = ClientController()
         self.product_controller = ProductController()
+        self.client_controller = ClientController()
+
+    def sales_report(self):
+        sales = self.sale_controller.sales_report()
+        if not sales:
+            print("No sales available.")
+            return
+        
+        print("\nSales Report")
+        print("----------------------------------------------------------------------------------------------------")
+        print(f"{'Client':<20} {'Product':<20} {'Quantity':<10} {'Total Price':<15} {'Date':<15}")
+        print("----------------------------------------------------------------------------------------------------")
+        for sale in sales:
+            client = sale.get('client', {}).get('name', 'N/A')
+            products = sale.get('products', [])
+            date = sale.get('date', 'N/A')
+            for item in products:
+                product_name = item.get('name', 'N/A')
+                quantity = item.get('quantity', 0)
+                total_price = item.get('price', 0.0) * quantity
+                print(f"{client:<20} {product_name:<20} {quantity:<10} {total_price:<15} {date:<15}")
+            print("----------------------------------------------------------------------------------------------------")
 
     def add_sale(self):
         client_id_input = input("Enter client ID: ")
@@ -21,53 +43,123 @@ class SaleView:
             print("Client not found.")
             return
 
-        print("Available products:")
-        products = self.product_controller.list_products()
-        product_ids = [str(product['id']) for product in products]
-        for product in products:
-            print(f"ID: {product['id']}, Name: {product['name']}, Price: {product['price']}")
+        products = []
+        while True:
+            print("Available products:")
+            available_products = self.product_controller.list_products()
+            for product in available_products:
+                print(f"ID: {product['id']}, Name: {product['name']}, Price: {product['price']}, Quantity in Stock: {product['quantity']}")
 
-        product_ids_input = input("Enter product IDs (comma separated): ")
-        selected_products = []
-        for pid in product_ids_input.split(','):
-            pid = pid.strip()
-            if pid not in product_ids:
-                print(f"Invalid product ID: {pid}. Please select a valid product.")
-                return
-            product = self.product_controller.get_product_by_id(int(pid))
-            selected_products.append(product)
+            product_id_input = input("Enter product ID to add to the sale (or 'done' to finish): ")
+            if product_id_input.lower() == 'done':
+                break
 
-        if not selected_products:
-            print("No valid products selected. Sale aborted.")
+            try:
+                product_id = int(product_id_input)
+            except ValueError:
+                print("Invalid product ID. Please enter a numeric value.")
+                continue
+
+            product = self.product_controller.get_product_by_id(product_id)
+            if not product:
+                print("Product not found.")
+                continue
+
+            quantity = int(input(f"Enter quantity for {product['name']} (Available: {product['quantity']}): "))
+            if quantity > product['quantity']:
+                print(f"Not enough stock for {product['name']}.")
+                continue
+
+            # Reduz a quantidade no estoque e atualiza o banco de dados
+            product['quantity'] -= quantity
+            self.product_controller.update_product(product)
+
+            # Adiciona apenas a quantidade informada ao relatório de vendas
+            products.append({
+                'name': product['name'],
+                'price': product['price'],
+                'quantity': quantity
+            })
+
+        if not products:
+            print("No products selected. Sale aborted.")
             return
 
         date = input("Enter sale date (YYYY-MM-DD): ")
-        self.sale_controller.add_sale(client, selected_products, date)
+        self.sale_controller.add_sale(client, products, date)
         print("Sale added successfully.")
 
-    def sales_report(self):
+    def top_selling_products(self):
         sales = self.sale_controller.sales_report()
+        if not sales:
+            print("No sales available.")
+            return
+
+        product_counter = Counter()
         for sale in sales:
-            print(sale)
+            for item in sale.get('products', []):
+                product_name = item.get('name')
+                quantity = item.get('quantity', 0)
+                product_counter[product_name] += quantity
+
+        if not product_counter:
+            print("No products sold yet.")
+            return
+
+        print("\nTop Selling Products")
+        print("----------------------------------------------------------------------------------------------------")
+        print(f"{'Product':<20} {'Quantity Sold':<15}")
+        print("----------------------------------------------------------------------------------------------------")
+        for product, quantity in product_counter.most_common():
+            print(f"{product:<20} {quantity:<15}")
+        print("----------------------------------------------------------------------------------------------------")
 
     def sales_by_date(self):
-        date = input("Enter the date (YYYY-MM-DD) for the sales report: ")
-        sales = self.sale_controller.sales_by_date(date)
-        if not sales:
-            print(f"No sales found for the date: {date}")
-        else:
-            for sale in sales:
-                print(sale)
+        date = input("Enter the date to filter sales (YYYY-MM-DD): ")
+        sales = self.sale_controller.sales_report()
+        filtered_sales = [sale for sale in sales if sale.get('date') == date]
 
-    def top_selling_products(self):
-        top_products = self.sale_controller.top_selling_products()
-        for product, count in top_products:
-            print(f"Product: {product}, Sales: {count}")
+        if not filtered_sales:
+            print(f"No sales found for the date {date}.")
+            return
+        
+        print(f"\nSales Report for {date}")
+        print("----------------------------------------------------------------------------------------------------")
+        print(f"{'Client':<20} {'Product':<20} {'Quantity':<10} {'Total Price':<15}")
+        print("----------------------------------------------------------------------------------------------------")
+        for sale in filtered_sales:
+            client = sale.get('client', {}).get('name', 'N/A')
+            products = sale.get('products', [])
+            for item in products:
+                product_name = item.get('name', 'N/A')
+                quantity = item.get('quantity', 0)
+                total_price = item.get('price', 0.0) * quantity
+                print(f"{client:<20} {product_name:<20} {quantity:<10} {total_price:<15}")
+            print("----------------------------------------------------------------------------------------------------")
 
     def top_clients(self):
-        top_clients = self.sale_controller.top_clients()
-        for client, count in top_clients:
-            print(f"Client: {client}, Purchases: {count}")
+        sales = self.sale_controller.sales_report()
+        if not sales:
+            print("No sales available.")
+            return
+
+        client_counter = Counter()
+        for sale in sales:
+            client = sale.get('client', {}).get('name', 'N/A')
+            total_sale = sum(item.get('price', 0.0) * item.get('quantity', 0) for item in sale.get('products', []))
+            client_counter[client] += total_sale
+
+        if not client_counter:
+            print("No clients found.")
+            return
+
+        print("\nTop Clients")
+        print("----------------------------------------------------------------------------------------------------")
+        print(f"{'Client':<20} {'Total Spent':<15}")
+        print("----------------------------------------------------------------------------------------------------")
+        for client, total_spent in client_counter.most_common():
+            print(f"{client:<20} {total_spent:<15.2f}")
+        print("----------------------------------------------------------------------------------------------------")
 
     def menu(self):
         while True:
@@ -84,7 +176,7 @@ class SaleView:
             elif choice == '2':
                 self.sales_report()
             elif choice == '3':
-                self.sales_by_date()  # Certifique-se de que este método está agora implementado
+                self.sales_by_date()
             elif choice == '4':
                 self.top_selling_products()
             elif choice == '5':

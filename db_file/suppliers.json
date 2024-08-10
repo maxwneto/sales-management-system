@@ -1,1 +1,10 @@
-[]
+[
+    {
+        "name": "Amazon",
+        "contact_info": "1134569312"
+    },
+    {
+        "name": "Mercado Livre",
+        "contact_info": "1245693445"
+    }
+]
