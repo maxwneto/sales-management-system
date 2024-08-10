@@ -16,32 +16,16 @@ class ProductController:
         return self.products
 
     def get_product_by_id(self, product_id):
+        # Garante que product_id seja comparado corretamente com o ID do produto
         for product in self.products:
-            if product.get('id') == int(product_id):
+            if str(product.get('id')) == str(product_id):
                 return product
         return None
 
-    def update_product(self, product_id, name=None, price=None, category=None, quantity=None):
-        product = self.get_product_by_id(product_id)
-        if product:
-            if name:
-                product['name'] = name
-            if price is not None:
-                product['price'] = price
-            if category:
-                product['category'] = category
-            if quantity is not None:
-                product['quantity'] = quantity
-            self.data_manager.save_data(self.products)
-            print(f"Product ID {product_id} updated successfully.")
-        else:
-            print(f"Product ID {product_id} not found.")
-
-    def delete_product(self, product_id):
-        product = self.get_product_by_id(product_id)
-        if product:
-            self.products.remove(product)
-            self.data_manager.save_data(self.products)
-            print(f"Product ID {product_id} deleted successfully.")
-        else:
-            print(f"Product ID {product_id} not found.")
+    def update_product(self, updated_product):
+        for i, product in enumerate(self.products):
+            if product['id'] == updated_product['id']:
+                self.products[i] = updated_product  # Atualiza o produto na lista
+                self.data_manager.save_data(self.products)
+                return True
+        return False
